@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <style>
+        .box,
+        .box1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background: lawngreen;
+        }
+
+        .box1 {
+            top: 100px;
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box"></div>
+    <div class="box1"></div>
+    <script>
+        let oBox = document.querySelector('.box');
+        let oBox1 = document.querySelector('.box1');
+
+        setWH(oBox1, getLocalStorage('box1l'), getLocalStorage('box1t'));
+        setWH(oBox, getLocalStorage('boxl'), getLocalStorage('boxt'));
+
+        touch(oBox);
+        touch(oBox1);
+        function setWH(ele, L, T) {
+            ele.style.left = L + 'px';
+            ele.style.top = T + 'px';
+        }
+
+        function getLocalStorage(name) {
+            return localStorage.getItem(name);
+        }
+
+        function touch(ele) {
+            let name = ele.getAttribute('class')
+            let startX = 0, startY = 0, moveX = 0, moveY = 0, x = 0, y = 0, l = 0, t = 0;
+            ele.addEventListener('touchstart', function (e) {
+                startX = e.targetTouches[0].pageX;
+                startY = e.targetTouches[0].pageY;
+                x = ele.offsetLeft;
+                y = ele.offsetTop;
+            });
+            ele.addEventListener('touchmove', function (e) {
+                moveX = e.targetTouches[0].pageX - startX;
+                moveY = e.targetTouches[0].pageY - startY;
+                let maxW = document.documentElement.clientWidth - ele.clientWidth;
+                let maxH = document.documentElement.clientHeight - ele.clientHeight;
+                l = x + moveX;
+                t = y + moveY;
+                if (l > maxW) { l = maxW };
+                if (l < 0) { l = 0 };
+                if (t > maxH) { t = maxH };
+                if (t < 0) { t = 0 };
+                ele.style.left = l + 'px';
+                ele.style.top = t + 'px';
+            });
+            ele.addEventListener('touchend', function () {
+                localStorage.setItem(name + 'l', l);
+                localStorage.setItem(name + 't', t);
+                ele.style.left = l + 'px';
+                ele.style.top = t + 'px';
+                console.log(name + ' 当前位置 X：' + l + ' Y：' + t);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
